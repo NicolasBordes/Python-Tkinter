@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import pyodbc
 from random import choice
-x = 0
+
     
 
 #window
@@ -35,47 +35,30 @@ for i in range(100):
     table.insert(parent="",index=0,values=data)
 
 listeBtn=['bnt1','btn2','btn3']
-# for item in listeBtn:
-#     #print(item)
-#     item = tk.Button(window,text=item)
-#     item.pack()
+
 def btnAction(item):  
-    global x
-    #print(item.config('text')[-1])
-    print(item)
-    x = x + 1
+     print(item.cget('text'))
+ 
+def clicked(btn):
+    btn_text = btn.cget('text')
+    print(btn_text)
+
 
 def displayButton(listButton):
-    
+    buttons =[]    
     for item in listButton:
-        #print(item)
-        item = tk.Button(window,text=item, command= lambda : btnAction(listButton[x]))
+        item  = tk.Button(window,text=item)
         item.config(width=20, height=2)
-        item.pack()
+        buttons.append(item)
         
-    
+    for button in buttons:
+        button.config(command=lambda btn=button: clicked(btn)) # attention!! : command = lambda: clicked(button) >> ne fonctionnera pas >> les boutons cliqués renverront toujour btn3
+        button.pack()
+
 displayButton(listeBtn)
 
-#btn = tk.Button(window,text="essai de bouton", command=btnAction('essai'))
-
-#btn.pack()
 
 window.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
