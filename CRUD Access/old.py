@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 import pyodbc
 from random import choice
-from utiliy import showTable as test
 
 #window
 window = tk.Tk()
@@ -13,7 +12,17 @@ window.title("Treeview")
 filename_label = tk.Label(window, text="table training")
 filename_label.pack()
 
-theColumns = ()
+#treeview
+table=ttk.Treeview(window, columns=('Titre','MetteurEnScene','Auteur','resumer'),show='headings')
+table.column("Titre",width=140,anchor="center")
+table.column("MetteurEnScene",width=140,anchor="center")
+table.column("Auteur",width=140,anchor="center")
+table.column("resumer",width=180,anchor="center")
+table.heading('Titre',text = 'Titre')
+table.heading('MetteurEnScene',text = 'Metteur en scène')
+table.heading('Auteur',text = 'Auteur')
+table.heading('resumer',text = 'Résumer')
+table.pack()
 
 listeBtn=['Lieux','Pieces','Salaries']
 
@@ -21,9 +30,12 @@ def btnAction(item):
      print(item.cget('text'))
  
 def clicked(btn):
-    table.destroy()
+    # for i in table.get_children():
+    #     table.delete(i)
+    #     window.update()
     btn_text = btn.cget('text')
     displayTable(btn_text)
+
 
 def displayButton(listButton):
     buttons =[]    
@@ -44,23 +56,14 @@ def displayTable(tableName):
     #création d'une table ou alors connexion auprès de cette table si elle existe déjà
     # au TDV, sur le serveur
     #conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=Z:\compta\essai1.accdb;') 
-    # en local, sur le PC du TDV
-    #conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\n.bordes.TDV\Desktop\newPython\Tkinter\CRUD Access\essai1.accdb;')
-    # en local sur le PC maison
-    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\nicolas\Desktop\excel BD\essai1.accdb;')
+    # en local, sur ce PC
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\nicolas\Desktop\excel BD\essai1.accdb;')    
     cursor = conn.cursor()
     cursor.execute(f'select * from {tableName}')
-
-    #treeview
-    columns = [column[0] for column in cursor.description]
-    theColumns = tuple(columns)
-    global table
-    table=ttk.Treeview(window, columns=theColumns,show='headings')
-    for item in theColumns:
-        table.column(item,width=140,anchor="center")  
-        table.heading(item,text = item)
+    #insert values into table
+    # for item in listeBtn:
+    #     table.column(item,anchor="CENTER",stretch="NO",width=20)
     
-    #fill table
     for row in cursor.fetchall():
         col1 = row[1]
         col2 = row[2]
@@ -68,10 +71,11 @@ def displayTable(tableName):
         col4 = row[4]
         data = (col1,col2,col3,col4)
         table.insert(parent="",index=0,values=data)
-    
-    table.pack()
+    # pour obtenir la liste des entêtes de colonnes 
+    columns = [column[0] for column in cursor.description]
+    print(columns)
     conn.close
 
 displayTable("Salaries")
-table.pack()
+
 window.mainloop()
