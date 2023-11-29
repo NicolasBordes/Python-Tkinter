@@ -11,7 +11,7 @@ for i  in range(20): #fills list with nonsense jobs for troubleshooting
 listeKey = list(b.keys())
 listValue = list(b.values())
 myliste = [listeKey,listValue]
-#ajout d'un commentaire
+#ajout d'un commentaire test der
 def getIndex(valeur):
    id = myliste[0].index(valeur)
    print(myliste[1][id])
