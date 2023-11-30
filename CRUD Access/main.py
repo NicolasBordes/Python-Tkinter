@@ -14,11 +14,7 @@ filename_label = tk.Label(window, text="table training")
 filename_label.pack()
 
 theColumns = ()
-
 listeBtn=['Lieux','Pieces','Salaries']
-
-def btnAction(item):  
-     print(item.cget('text'))
  
 def clicked(btn):
     table.destroy()
@@ -41,19 +37,19 @@ def displayButton(listButton):
 displayButton(listeBtn)
 
 def displayTable(tableName):
-    #création d'une table ou alors connexion auprès de cette table si elle existe déjà
     # au TDV, sur le serveur
     #conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=Z:\compta\essai1.accdb;') 
     # en local, sur le PC du TDV
-    #conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\n.bordes.TDV\Desktop\newPython\Tkinter\CRUD Access\essai1.accdb;')
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\n.bordes.TDV\Desktop\newPython\Tkinter\CRUD Access\essai1.accdb;')
     # en local sur le PC maison
-    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\nicolas\Desktop\excel BD\essai1.accdb;')
+    #conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\nicolas\Desktop\excel BD\essai1.accdb;')
     cursor = conn.cursor()
     cursor.execute(f'select * from {tableName}')
 
     #treeview
     columns = [column[0] for column in cursor.description]
     theColumns = tuple(columns)
+    nbColumns = len(theColumns)
     global table
     table=ttk.Treeview(window, columns=theColumns,show='headings')
     for item in theColumns:
@@ -62,12 +58,11 @@ def displayTable(tableName):
     
     #fill table
     for row in cursor.fetchall():
-        col1 = row[1]
-        col2 = row[2]
-        col3 = row[3]
-        col4 = row[4]
-        data = (col1,col2,col3,col4)
-        table.insert(parent="",index=0,values=data)
+        listRow = []
+        for x in range(0,nbColumns) :
+            listRow.append(row[x])
+        tupleRow = tuple(listRow)    
+        table.insert(parent="",index=0,values=tupleRow)
     
     table.pack()
     conn.close
