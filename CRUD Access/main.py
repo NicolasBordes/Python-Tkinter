@@ -14,7 +14,7 @@ filename_label = tk.Label(window, text="table training")
 filename_label.pack()
 
 theColumns = ()
-listeBtn=['Lieux','Pieces','Salaries']
+
  
 def clicked(btn):
     table.destroy()
@@ -34,16 +34,21 @@ def displayButton(listButton):
         # soit le dernier de la liste
         button.pack()
 
-displayButton(listeBtn)
-
 def displayTable(tableName):
     # au TDV, sur le serveur
     #conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=Z:\compta\essai1.accdb;') 
     # en local, sur le PC du TDV
-    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\n.bordes.TDV\Desktop\newPython\Tkinter\CRUD Access\essai1.accdb;')
+    #conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\n.bordes.TDV\Desktop\newPython\Tkinter\CRUD Access\essai1.accdb;')
     # en local sur le PC maison
-    #conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\nicolas\Desktop\excel BD\essai1.accdb;')
+    conn = pyodbc.connect(r'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\Users\nicolas\Desktop\excel BD\essai1.accdb;')
     cursor = conn.cursor()
+
+    cursor.execute(f'select * from TablesName') # importe tous les noms de table de la base via la table "TablesName"
+    global listeBtn
+    listeBtn = []
+    for row in cursor.fetchall():
+        listeBtn.append(row[1])
+
     cursor.execute(f'select * from {tableName}')
 
     #treeview
@@ -68,5 +73,6 @@ def displayTable(tableName):
     conn.close
 
 displayTable("Salaries")
+displayButton(listeBtn)
 table.pack()
 window.mainloop()
